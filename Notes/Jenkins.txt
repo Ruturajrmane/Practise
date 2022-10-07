@@ -1,0 +1,55 @@
+1) Scripted syntax
+2) Declarative pipeline
+pipeline {
+	agent any
+	stages {
+		stage ('Hello'){
+		steps{
+			}}
+		}
+	}
+pipeline {
+    agent any ---- instructs Jenkins to allocate an executor
+    stages {
+        stage('Stage 1') {
+            steps {
+                echo 'Hello world!' ---- writes simple string in the console output
+            }
+        }
+    }
+}
+
+Jenkinsfile is where the pipeline is written and it can be saved to the SCM (Source code monitoring) ex - github
+Pipeline can be created in following three ways
+1) Through blue ocean 
+2) Through classic UI - File will be stored in jenkins home directory
+3) In SCM - we can write the jenkinsfile manually and commit it to repo from where it will be fetched and build
+Jenkins can then check out your Jenkinsfile from source control as part of your Pipeline project’s build process and then proceed to execute your Pipeline.
+
+a) From definination option chose pipeline script from scm option
+
+Jenkinsfile
+pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building..'
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing..'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying....'
+            }
+        }
+    }
+}
+
+Build ----
+Typically this stage of the Pipeline will be where source code is assembled, compiled, or packaged.

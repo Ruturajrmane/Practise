@@ -1,0 +1,157 @@
+You might perform feature engineering to:
+
+improve a model's predictive performance
+reduce computational or data needs
+improve interpretability of the results
+
+--- Cross_validation_score
+score = corss_val_score( scoring = 'neg_mean_absolute_error')
+final = -1 * score.mean()
+we need error to below and in scikit learn always the higher better is applied so we have used neg_mae to get lower better
+
+The advantage of mutual information is that it can detect any kind of relationship, while correlation only detects linear relationships.
+Mutual information describes relationships in terms of uncertainty. The mutual information (MI) between two quantities is a measure of the extent to 
+which knowledge of one quantity reduces uncertainty about the other.
+
+MI value = 0 means features are independent and higher value can be any but usually 2.
+MI can't detect interactions between features. It is a univariate metric. It is meausred as single feature to target relationship.
+
+X, _ =Series.factorsize()  ---- Returns the series of ordinaly encoded and the unique values
+
+Scikit-learn has two mutual information metrics in its feature_selection module: one for real-valued targets (mutual_info_regression) 
+and one for categorical targets (mutual_info_classif)
+
+We convert all the numerical features into 'float64'
+and by encoding convert categorical into 'int64'
+from sklearn.feature_selection import mutual_info_regression
+
+def make_mi_scores(X, y, discrete_features):
+    mi_scores = mutual_info_regression(X, y, discrete_features=discrete_features)  --- discrete_features = list of the discrete columns [i for i in df.columns if df[i].dtype == 'int64']
+    mi_scores = pd.Series(mi_scores, name="MI Scores", index=X.columns)
+    mi_scores = mi_scores.sort_values(ascending=False)
+    return mi_scores
+
+matplotlib.pyplot.barh(width, values) -- Makes horizontal bar plot
+
+sns.relplot(x = 'feature_to_analyze', y = 'target', data = df, hue = 'another_feature', col = 'Column_name', row = 'Column_name')  ---- Relationbetween the feature and the target
+The major difference between relplot and scatterplot (as well as others) is that it can also segregate data attributes into rows and columns of subplots.
+
+df_melt = df.melt(frame, id_vars=['Salesprice', 'Cluster'], value_vars=[Column1, Column2, .. ..])
+output of above will be 
+columns -- 'Salesprice' 'Cluster' 'Variables' 'Value'
+sns.relplot(x = 'Value', y = 'Salesprice', hue = 'cluster', columns = 'Variables', data = df_melt)
+This function is useful to massage a DataFrame into a format where one or more columns are identifier variables (id_vars), while all other columns, 
+considered measured variables (value_vars), are “unpivoted” to the row axis, leaving just two non-identifier columns, ‘variable’ and ‘value’.
+
+In pandas arithmetic operations can be applied to the columns
+df['New column'] = df['column1'] + df['column2']
+
+df['Counts'] = df[[list of the columns containing 1 or 0 / True or False]].sum(axis=1)
+
+
+df['Counts'] = df[[list of the columns containing 1 or 0 / True or False]].gt(0).sum(axis=1)  ---- Counts the one having value grater than zero
+
+---- The str accessor lets you apply string methods like split directly to columns.
+df[['new1', 'new2']] = df['column'].str.split(" ", expand = True)
+separating the string by space and expanding it into two different columns ---- 'LSC Flopp' get into two new features i.e 'LSC' and 'Flopp'S
+
+Combing 
+df['column_name'] = df['new1'] + '_' + df['new2']
+
+Group Transform ---- Average income by states
+df['average_income'] = (
+df.groupby('state')['Income'].transform('mean')
+
+---- Feature Engineering Tips -----
+Linear models learn sums and differences naturally, but can't learn anything more complex.
+Ratios seem to be difficult for most models to learn. Ratio combinations often lead to some easy performance gains.
+Linear models and neural nets generally do better with normalized features. Neural nets especially need features scaled to values not too far from 0. 
+Tree-based models (like random forests and XGBoost) can sometimes benefit from normalization, but usually much less so.
+Tree models can learn to approximate almost any combination of features, but when a combination is especially important they can still benefit 
+from having it explicitly created, especially when data is limited.
+Counts are especially helpful for tree models, since these models don't have a natural way of aggregating information across many features at once.
+
+In the categorical feature we need to get that whether each category tells how the target should be if it doesn't tell then MI will be low
+To see the categorical feature and target relation
+sns.catplot(x = 'cat_column', y = 'target_column', data = df, kind= 'boxen')
+
+To look the interaction of one feature with another
+sns.lmplot(x = 'col_feat', y = 'target', hue = 'cat_fea_column', col = 'cat_fea_column')
+
+For creating dummies
+pd.get_dummies(X['Categorical'], prefix = 'Bldg')  ---- Each columns starts with the name Bldg
+
+1) Mathematical Transform
+Creating the ratio and the addition of the columns
+
+2) Interaction with categorical
+X_2 = pd.getdummies(X['Categorical_features'], prefix = '')
+X_new = X_2.mul(X['Contineous_features'], axis = 0)
+
+3) Count feature
+df['Counts'] = df[[list of the columns containing 1 or 0 / True or False]].sum(axis=1)
+
+4) Breaking down categorical feature
+df['new feat.'] = df['Column_name'].apply(lambda x:x.split('_')[0])
+
+5) Grouped Transform
+df['average_income'] = (df.groupby('state')['Income'].transform('mean')
+
+Clustering with K-means
+To untangle complex spatial relationships with cluster labels..
+Since k-means clustering is sensitive to scale, it can be a good idea rescale or normalize data with extreme values.
+Steps
+1) assign points to the nearest cluster centroid
+2) move each centroid to minimize the distance to its points
+Aruments - 
+number (n_clusters) of centroids
+max_iter -- It tells how many times the above steps should be repeated
+n_init --- Initial iterations
+
+X - contains columns/features - ['Longitude', 'Latitude', 'MedianIncome'] means we are grouping with the MedianIncome
+kmeans = KMeans(n_clusters=6)
+X["Cluster"] = kmeans.fit_predict(X)
+X["Cluster"] = X["Cluster"].astype("category")
+
+To view the clustering
+sns.relplot(x= latitude, y = longitude, hue = cluster)
+
+To see whether the cluster which is categorical is effective or not for predicting target
+sns.catplot(x='cluster' , y = 'Target', data = df, kind = 'boxen')
+These box-plots show the distribution of the target within each cluster. 
+If the clustering is informative, these distributions should, for the most part, separate across cluster
+
+The k-means algorithm is sensitive to scale. This means we need to be thoughtful about how and whether we rescale our features since we might get very different results
+ depending on our choices. As a rule of thumb, if the features are already directly comparable (like a test result at different times), 
+then you would not want to rescale. On the other hand, features that aren't on comparable scales (like height and weight) will usually benefit from rescaling. 
+Sometimes, the choice won't be clear though. In that case, you should try to use common sense, 
+remembering that features with larger values will be weighted more heavily.
+
+Latitude and Longitude of cities in California -- No, since rescaling would distort the natural distances described by Latitude and Longitude.
+Lot Area and Living Area of houses in Ames, Iowa -- Either choice could be reasonable, but because the living area of a home tends to be more valuable per square foot,
+it would make sense to rescale these features so that lot area isn't weighted in the clustering out of proportion to its effect on SalePrice, 
+if that is what you were trying to predict.
+
+X_scaled = (X_scaled - X_scaled.mean(axis=0)) / X_scaled.std(axis=0)
+axis selected as 0 even claculating the along the columns
+
+
+The k-means algorithm offers an alternative way of creating features. Instead of labelling each feature with the nearest cluster centroid, 
+it can measure the distance from a point to all the centroids and return those distances as features.
+X_cd = kmeans.fit_transform(X_scaled)
+X_cd for each record is a list of the distnace from each centroid, if there are 10 centroid then list will have 10 elements
+
+----- Principal Component Analysis -----
+clustering is a partitioning of the dataset based on proximity, you could think of PCA as a partitioning of the variation in the data.
+
+PCA is typically applied to standardized data. With standardized data "variation" means "correlation". With unstandardized data "variation" means "covariance".
+The new features PCA constructs are actually just linear combinations (weighted sums) of the original features:
+These new features are called the principal components of the data. The weights themselves are called loadings.
+PCA makes this precise through each component's percent of explained variance --- which tells how much variance does each pc1,pc2 etc. expliance
+Find loading of scores (absolute) to find the the feature which contributes more
+
+PCA Best Practices
+There are a few things to keep in mind when applying PCA:
+PCA only works with numeric features, like continuous quantities or counts.
+PCA is sensitive to scale. It's good practice to standardize your data before applying PCA, unless you know you have good reason not to.
+Consider removing or constraining outliers, since they can have an undue influence on the results.

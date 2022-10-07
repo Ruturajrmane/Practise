@@ -1,0 +1,300 @@
+Accessing the pandas DataFrame
+	1) df[columns_name] gets the series df[can pass the bool]  --- We can directly as we create df from dictionary where key becomes the column hence can access same way as we do for dictionary
+	2) df.loc[sepcify the row name, [specify the column name]]
+	3) df.iloc[specifying the index of row, specifying index of the column]
+	4) df[[colum1, column2, columns3]] - to access multiple column 
+	5) We can access the data using index number such as df[index number], example df[2015:2018]
+
+Concatinating the data in the dataframe
+	pd.concat([data1, data2, data3], axis = 0 for rows and 1 for column)
+
+Converting object into int
+	pd.to_numeric()
+
+Converting into datetime
+	pd.to_datetime()
+
+Converting into list
+	1) For the dataframe - df.to_numpy().tolist()
+	2) For the series - df['Column name'].tolist()
+
+Setting index and accesing the index of dataframe
+	df = df.set_index(df['time'])
+	index = df.index
+	df = pd.DataFrame(array, index)
+	Incase of json object - {'a' : {'1': er, '2': rt}} - 'a' will be set as the columns name and the internal dictionary keys i.e '1' and '2' will be set as index
+
+Batch GD - all training set taken at once
+SGD - minibatches of training set
+Adam (Adaptive moment estimation)is an SGD algorithm that has an adaptive learning rate that makes it suitable for most problems without any parameter tuning
+
+input - 
+hidden layer- we define in the model.Sequential()
+output - we define in the model.Sequential(), there can be activation - without activation means used for regression and with activation if sigmoid then can be 
+used for classification
+
+Wider network (Neural Network) - Means putting more numbers of neurons/units in the existing hidden layers It helps to learn linear relationship betweeen the data
+Deeper network - Incrasing the number of hidden layer - It helps to learn non-linear relationship between data.
+
+Groupshufflesplit and GroupKfold
+history = model.fit(x_train, y_train, validation_data = (x_val, y_val), epochs =10, batch_size = 128, verbose = 0, callbacks = [early_stopping])
+df = pd.DataFrame(history.history)
+df.loc[:, ['loss', 'val_loss']].plot()
+
+Dropout - Used to prevent the overfitting (model.Sequential(layers.Dropout(0.3), layers.Dense() --- This layers 30% neurons will be dropped)
+Batch normalization - used to speed up the optimization (or speed up the training)
+
+df_train = df.sample(frac = 0.7)
+df_test = df.drop(df_train.index)
+
+df['arrvial_date_month'] = df['arrvial_date_month'].map({'Jan' :1, 'Feb':2, 'March':3, 'April':4})
+
+feature_num = ['col1', 'col2', 'col3']
+transform_num = make_pipeline(SimpleImputer(startegy = 'mean'), MinMaxscaler())
+preprocessor = make_column_transformer((transform_num, feature_num), (....))
+split data into train_validation -  stratify - make sure classes are evenlly represented across splits
+x_train = preprocessor.fit_transform(x_train)
+x_valid = preprocessor.transform(x_valid)
+
+pd.DataFrame({'Bob':[1, 2], 'Sue':[3,4]}, index = ['a','b'])
+pd.Series([1,2,3], index = ['a','b','c'], name = 'sample') ---- name can be only one as series is the single column
+pd.read_csv('...', header = 1, index_col=0)
+
+df.iloc[[1,2,4], 4] --- In the row or column position list of index can be passed
+df.iloc[-5:] ---- retreives last five rows 
+df.iloc[:-1] ----- retrieves all rows except last row
+
+df.iloc --- Exckusive as last number of the range won't be considered
+df.loc  ---- Inclusive as last index of the range will be consideredq
+
+df.loc[(df.country == 'Italy') & (df.points >= 90)] --- To select the dataframe where country is itly and points are greater than or eqaul to 90 (ampresand)
+df.loc[(df.country == 'Itly') | (df.points >= 90)] --- To select the dataframe where country is itly or points are greater than or eqaul to 90 (pipe)
+
+df.loc[df.country.isin(['Italy', 'USA'])] -- .isin will also return the Series of the True/Flase with index  
+df.country.notnull() --- Gives the series of the True and False
+
+reviews.description.iloc[:10] == reviews.loc[:9, "description"]
+
+pd.set_option('max_rows', 5) --- view maximum 5 rows
+
+df.country.value_counts() --- returns the unique values and how often it occurs
+
+df.map() --- Can be applied only on the only Series
+df.applymap() --- Can be applied on the only Dataframe
+df.apply() --- Can be applied only on the Series or DataFrame
+
+def fun(row):
+	row.points = row.points - df.points.mean()
+	return row
+
+df.apply(fun, axis = 'columns')  --- specifying axis we will be modifying the rows and specifying axis = 'index' we will be modifying columns 
+
+df.columnname.map(lambda x:) --- In this case we are passing Series which will not have any column name attahced to it
+
+df.apply(fun, axis = 'columns')
+def fun(row):
+	return 3 if row.points >= 95 or row.country == 'canada' else 2 if row.poi ....
+In the above case we are passing the rows having the column tag attached to it..
+
+reviews.country.value_counts() ---- Each countries occuring frequency (This returns the series with the index is the column selected and values are the frequency)
+reviews.groupby('country').country.count() --- Does same as above
+
+Series.idxmax() -- Returns the index having the maximum value in series.
+
+df.sort_values(by = ['column_name', 'column2'], ascending = True/False) --- returns the df sorted by values unlike sorted by index
+
+df.reset_index() --- To give index again densly
+
+df.sort_index() -- Sorting dataframe by index
+
+df.groupby('country').price.max() --- 
+The above expression returns the series and the index of series is always going to be the groupbyed column value and values will be whatever infront we write.
+
+df.groupby('country').price.agg([len, min, max])
+Upon mentioning aggregate we get the DataFrame where in above case will get columns as len, min, max
+
+df1 = df.groupby(['country', 'state']) --- grouping by multiple columns and the index will be multi index i.e will contain both the country and state
+df1.reset_index() -- country and state will become the columns
+
+df.groupby('column_name').apply(lambda df:...) --- Input to the lambda function will be the dataframe grouped part...
+
+df.dtype
+df.columnname.dtype 
+
+df.columnname = df.columnname.astype('int64') -- for converting into the integer datatype
+
+df.rename(columns = {'oldname':'newname'})
+df.rename_axis('wines', axis = 'rows')
+
+Most of the merge() can do we can simply do with join()
+df = left.join(right, on=column_name)
+
+join and merge are used on the DataFrame --- Dimnsions can be different
+whereas concat is used on the DataFrame aswell as Series. --- In case of concat dimensions need to be the same as per mentioned axis.
+
+In the sklaern train_test_split(X('Feature'), y('target'))
+
+If scaler is used before train_test_split, data leakage will happen. Do use scaler after train_test_split
+
+MinMaxScaler(feature_range = (0,1))  --- This brings all the fetures values between the o to 1
+StandardScaler() --- Transform the data such that the mean = 0 and standard deviation = 1.
+RobustScaler() --- If there are oulier then use this
+
+DecisionTreeRegressor/RandomForestRegressor --- For predicting contineous value
+DecisionTreeClassifier/RamdomForestClassifier --- For predicting the categorical value
+
+For classification --- model_cl.score(X_test, Y_test)
+For regression
+from sklearn.metrics import mean_absolute_error
+pred = model.predict(X_test)
+mean_absolute_error(Y_test, pred)
+
+df['Column_name'].isnull().any() ---- Returns the True/False depending on column containing null value
+df['Column_name'].isnull() --- Returns True/False for each record
+
+df.isnull().sum()  --- Returns the column name with the total no. of missing records in each column
+
+Series[Series > 0] --- Returns the series with having values greater than 0
+
+df.dropna(axis = 0, subset = ['SalesPrice'], inplace = True) --- This removes the rows of column SalesPrice having missing values
+
+df = df.select_dtypes(exclude = ['object'])  --- This returns dataframe columns having only numerical columns
+for i in df.select_dtypes(['object', 'category'])  ---- Returns 
+	i    --- Column with categorical dtype
+SimpleImputer(missing_values = 'NaN', strategy = 'mean', fill_value = The constant value to be given to the NaN data using the constant strategy)
+imputer = SimpleImputer()
+Xt_imputed = pd.DataFrame(imputer.fit_transform(X_train))
+Xv_imputed = pd.DataFrame(imputer.trasform(X_valid))
+---- Imputor removes the column name to put it back
+Xt_imputed.columns = X_train.columns
+
+If we have the more missing values in columns then it is better to drop that columns.
+
+Imputation with extension --- One more column is added which indicated whether value was imputed or not (This column has True/False)
+suppose if there are 3 columns with missing values then 3 extension columns are added
+for col in X.isnull().sum > 0:
+	X[col + 'missing was added'] = X[col].isnull()
+
+To check the categorical variables
+cat = (df.dtypes == 'object')
+cat_list = list(cat[cat].index)
+
+or
+
+cat_list = [col for col in df.columns if df[col].dtype == 'object']
+
+Ordinal Encoding 
+There is clear ranking/ordering in the values are columns/features are called as ordinal variable.
+
+ord_enc = OrdinalEncoder()
+for col in cat_list:
+	df[col] = ord_enc.fit_transform(df[col])
+	df_val[col] = ord_enc.transform(df_val[col])
+
+One-Hot-Encoding
+Each values is different and there is not ranking/ordering in the values there features are called as nominal variables
+OH = OneHotEncoder(handle_unknown = 'ignore', sparse = False) ---- handle_unknown if we encounter the new category in the val/test then ignore that and return np.array 
+instead of sparse matrix
+
+oh_col_train = pd.DataFrame(OH.fit_transform(X_train[cat_list])
+oh_col_val = pd.DataFrame(OH.transform(X_val[cat_list])
+
+putting back the index as index gets erased
+oh_col_train.index = X_train.index
+
+Dropping the original categorical columns
+num_train = X_train.drop(cat_col, axis =1)
+
+Combinning 
+final_x_train = pd.concat([oh_col_train, num_train], axis = 1)
+
+df.drop(['column_name'], axis = 1, inplace = True )
+
+Ordinal Encoding ---- When there are new categories in the val/test dataset then those can't be handled by ordinal encoding
+So the column whose where val/test doesn't subset of train those will be dropped
+
+sub_y = [col for col in df.columns if set(x_val[col]).issubset(set(x_train[col]))]
+
+sub_n = list(set(cat_list) - set(sub_y))
+
+Cardanility ----
+Number of the unique values categorical column has is called as cardanility
+df['Col_name'].nunique()
+
+For large datasets with many rows, one-hot encoding can greatly expand the size of the dataset. For this reason, 
+we typically will only one-hot encode columns with relatively low cardinality. Then, high cardinality columns can either be dropped from the dataset, 
+or we can use ordinal encoding
+
+Pipeline
+
+num_trans = SimpleImputer(strategy = )
+
+cat_trans = Pipeline(steps = [
+	('impute', SimpleImputer(strategy = 'most_frequent')),
+	('one-hot', OneHotEncoder(handle_unknown = 'ignore')
+	]
+
+preprocessor = ColumnTransformer(transformers = [
+	('num', num_trans, list_of_num),
+	('cat', cat_trans, list_of_cat)
+	]
+
+model = RandomForestRegressor(n_estimators = 100)
+
+model_pipeline = Pipeline(steps = [
+	('prepreocess', preprocessor),
+	('model', model)
+	]
+
+model_pipeline.fit(X_train, y_train)
+
+pred = model_pipeline.predict(X_val)
+
+Cross - Validation -----
+When we use the validation separate set then there might be the noise/randomeness will be added using fixed subset of training set
+so we use cross-validation where we use different validation set and to measure performance
+
+10 fold cv
+
+score = -1 * cross_val_score(model_pipeline, X , y, cv = 10 , scoring = 'neg_mean_absolute_error')
+above returns scores list of 10
+
+We will no longer need to keep track of X_train, X_valid as all of these are taken care by cross_val_score
+
+1) Cross-validation can reduce the speed as for 10k cv we will have 9 times more calculation than of conventional method
+2) So it is better to run C-V on Smaller dataset only.
+
+**** matplotlib.pyplot.plot([list of x - axis values], [list of y axis values])
+
+GridSearchCV() -- is used for the selecting best combination of different parameters
+
+RandomForest and GradientBoostings are the ensembel means combining different models to make predictions as we combine different decision tree here.
+
+---- Gradient Boosting ----
+We use naive model to make preiction such as average of the output incase of the regression, calculate the mean squared error and build the one more model based 
+that and The "gradient" in "gradient boosting" refers to the fact that we'll use gradient descent on the loss function to determine the parameters in this new model
+
+n_estimators -- are the number of tree/ no. of cycles throught will go or no. of models in the XGBoost 
+n_estimators values varies in between 100 - 1000 less will undefit and more will overfit
+
+early_stopping_rounds - we stop after 5 straight rounds of deteriorating validation scores
+It is good to use the higher number of n_estimators and upon hitting early_stopping_rounds the model will stop 
+
+Learning rate = 0.05 it will take small number from each tree of gradient boosting and hence we can use more n_estomators without overfitting.
+
+n_job -- is set equal to number of the cores on machine so that for larger dataset the speed of calculation increases.
+
+model = XGBRegressor(n_estimators = 100, learning_rate = 0.05, n_jobs = 4)
+model.fit(X_train, y_train,
+	early_stopping_rounds = 5,
+	eval_set = [(X_valid, y_valid)]
+	verbose = o
+	)
+
+--- X_train, X_val = X_train.align(X_val, join = 'left', axis = 1) 
+Above makesthe X_val such that number of the columns are same in X_val and X_train
+
+--- Data Leakge ----
+1) Target leakage -- feature which will not be avilable in production or feature related 
+2) Train - Test contamination
+	

@@ -1,0 +1,79 @@
+import matplotlib.pyplot as plt
+
+pd.read_csv(path, index_col = 'Column_name_to_be_madeasindex', parse_date = True)
+
+plt.figure(figsize=(16,6))
+plt.title('This is the linechart')
+
+sns.lineplot(data = df)  ---- Plot the line graoh with X axis as index and y axis different columns values
+
+In the dataframe empty cells will appears as NaN - Not a Number
+
+plt.figure(figsize = (15,6))
+plt.title('Songs views vs date')
+sns.lineplot(data = df['shape of you'], label = 'Shape of you')    --- Label makes appear name in the legend
+sns.lineplot(data = df['Despcito], label = 'Despcito')  
+plt.xlable('Date')
+
+sns.barplot(x = df.index, y = df['Column_name'])
+sns.heatmap(data = df, annote = True)   --- X axis will be column names and y axis will be index
+In the above cases aswell we can specify the X and Y axis.
+
+sns.scatterplot(x = df['Column_name'], y = df['Column_name'])
+suppose we have total 100 samples then these will be shown on x-y plot plotted by scatterplot
+sns.scatterplot(x = df['Column_name'], y = df['Column_name'], hue = df['column_name'])
+hue mostly need to be categorical so that if we have 4, these 100 categories will be by different colour and legend will be shown
+
+lineplot -- Atleast One numerical
+barplot --- Atleast One numerical
+scatterplot --- Two required to be numerical
+
+sns.regplot(x = df['Column_name'], y = df['Column_name'])  --- It will show the line that best fit the data or the regression line
+Above is used to find the correlation
+
+sns.lmplot(x = 'Column_name', y = 'Column_name', hue = 'Column_name', data = df)
+Suppose if there are 2 categories for the hue then the two regression lines will be fitted each for the each category
+
+Categorical scatter plot
+In this plot will have one categorical variable and one numerical variable
+
+sns.swarmplot(x = df['Categorical_column_name'], y = df['Numerical_column_name'])
+
+Histogram ---
+sns.histplot(df['Column_name'])
+
+Kernel Density Estimate (KDE)
+It is the smothened histogram.
+sns.kdeplot(data = df['Column_name'], shade = True)
+
+2D Kernel density estimate plot 
+sns.jointplot(x = df['Column_name'], y = df['Column_name'], kind = kde)
+
+Adding the colour to the 
+sns.histplot(data = df, x = 'column_name', hue = 'column_name')
+
+sns.kdeplot(data = df, x= 'column_name', hue = 'column_name',shade = True)
+
+Trend
+1) Linechart
+
+Relation
+1)Barplot
+2)scatterplot
+3)regplot
+4)lmplot
+5)swarmplot
+6)Heatmap
+
+Distribution
+1)Histogram
+2)Kde
+4)jointplot
+
+sns.set_style("dark")  --- used for setting the theme
+(1)"darkgrid", (2)"whitegrid", (3)"dark", (4)"white", and (5)"ticks"
+
+Plotting the graphs in the same row :
+fig, axs = plt.subplots(1, 2, figsize = (12,6))
+sns.kdeplot(data, ax = axs[0])
+sns.kdeplot(data, ax = axs[1])

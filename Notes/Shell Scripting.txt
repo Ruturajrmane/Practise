@@ -1,0 +1,83 @@
+program should statrts with
+#!/bin/bash --- where bin/bash is the location of interpretor can be seen on any system by running commmand which bash
+
+assigning the variable
+a=10
+
+checking the variable
+if [ a = 10 ] ---- on putting the space is used for checking
+
+--- if else statement
+a=10
+if [ $a = 10 ] 
+then
+	statement
+else
+	statement
+fi
+
+---- for loop
+for i in 0 1 2 3 4 5 6 7
+do 
+	echo '$i'
+done
+
+---- while loop
+while [ $a -lt 10] or [$a -gt 10 ] or [ $a -eq 10 ] 
+do
+	statement
+done
+
+---- Reading the input from user
+echo 'Enter the input :'
+read inp
+echo $inp
+
+read -p 'enter input ' inp    ---- this will allow user to enter the input at the same line, will store input in variable inp
+read -sp 'enter input ' inp   ---- It will hide the value/ will not show value you are entering just like password
+
+---- Passing the arguments
+$ filename argument1 aerument2 ....
+this can be read
+echo $0 $1 $2  ---- $0 will have the filename stored
+accesing as a array
+echo $@ --- will print array of input
+
+for string comparison can be used = or == aswel
+
+if [ -e $filename ]  ---- True when file is present
+[ -f $filename ] --- True when file is present and file regular
+-d  ----- to check directory
+-s ----- checks whether file is empty or not
+-w ---- checks whether file has permission to write
+
+./filename   --- . presents wd and .. previous directory
+
+ls -al ----- It will show all files in pwd and thier pernissions for reading, writting, date of creation
+
+if [ $age -gt 10 ] && [ $age -ls 30 ]  or [ $age -gt 10 -a $age -ls 30 ]  ---- AND Opearator
+if [ $age -gt 10 ] ||  [ $age -ls 30 ]  or [ $age -gt 10 -o $age -ls 30 ]   --- OR Operator
+
+--- Arithmetic operation on integer 
+a = 10
+b = 20
+echo $(( a + b ))   or $( expr $a + $b )
+
+--- Arithmetic operation of float
+echo "20.5+5" | bc
+
+--- Case statement
+vehicle=$1 i.e first command line parameter will be assinged
+
+case $vehicle in
+	"car" or [A-Z])
+	echo 'Price will be 50" ;;
+	"truck" or [a-z] or [0-9])
+	echo 'Price will be 100" ;;
+	*)  --- Anyother than above
+	echo "Invalid input"
+esac
+
+
+7c73a18418064cf1be04e444ede17f4c
+http://192.168.1.10/:8080/

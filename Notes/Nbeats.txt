@@ -1,0 +1,27 @@
+Different apporaches are avialble for the time series forecasting 
+1) Pure stastical approach
+2) Hybrid approach where ML model is combined with the stastical model
+ML/TS combination approaches started infiltrating the domain withgreat success, showing promising results by using the outputs of statistical engines as features
+3) Pure DL model
+
+The problem with the DL model is that the results are note interpretable as like classical models
+Majorly Time series conisist of Trend and Seasonality component, which are decomposed by the stastical models
+
+NBEATS - Neural basis expansion analysis for interpratable time series forecasting
+
+Architecture - 
+Input ---- >> FC 4 layers ---->> gives out the Q expansion coefficient for backcast and forecast ---->> It is fed to the gf and gb
+In case of generic model this gf and gb are linear projection with learnable parameters such as forecast = y = VQ + B
+But the results of the generic models are not interpretable
+
+To make it iterpretable
+Trend model --- g is the polynomial of small degree like 2 or 3
+so, y = Q*T   ... T to the power p (p to be 2 or 3)
+Seasonality model fourier series function is used
+
+In this architecture there will be two stacks one for trend and one for the seasonality each will have the 3 basic blocks
+
+Residual networking is Previous block removes the portion of the signal bx`−1 that
+it can approximate well, making the forecast job of the downstream blocks easier
+
+We found that ensembling is a much more powerful regularization techniquethan the popular alternatives, e.g. dropout or L2-norm penalty.
